@@ -1,5 +1,7 @@
 <?php
 
+use App\Helpers\DataTable;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -20,9 +22,14 @@ Route::get('/', function () {
 
 Route::get('/test', function () {
     try {
-        DB::connection()->getPdo();
-        return "sukses connect db";
+        $pdo = DB::connection()->getPdo();
+        $datatable = (new DataTable)->of(User::query())->make();
+        return apiResponse(
+            $datatable,
+            'success connect to db',
+            true
+        );
     } catch (\Throwable $th) {
         return "gagal connect db - " . $th->getMessage();
-    } 
+    }
 });
