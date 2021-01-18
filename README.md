@@ -1,6 +1,17 @@
 # elearning-api
 Restful Api for elearning build with laravel.
 
+### Team Workspace 
+* Github Team
+  ```
+  https://github.com/imo-dev
+  ```
+* Jira
+  ```
+  https://imo-dev.atlassian.net/
+  ```
+
+
 ### First setup
 * clone repo
   ```
@@ -47,6 +58,11 @@ Restful Api for elearning build with laravel.
   composer update
   ```
 * check new setup in README.md for new info everyday
+
+
+### Third-party Library Use
+* laravel/sail
+
 
 ### Progress
 * [17 January 2021]
