@@ -18,7 +18,8 @@ services:
         networks:
             - sail
         depends_on:
-            - mysql
+            # - mysql
+            - postgres
             - redis
             # - selenium
     # selenium:
@@ -29,18 +30,29 @@ services:
     #         - sail
     #     depends_on:
     #         - laravel.test
-    mysql:
-        image: 'mysql:8.0'
+    # mysql:
+    #     image: 'mysql:8.0'
+    #     ports:
+    #         - '${FORWARD_DB_PORT:-3306}:3306'
+    #     environment:
+    #         MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+    #         MYSQL_DATABASE: '${DB_DATABASE}'
+    #         MYSQL_USER: '${DB_USERNAME}'
+    #         MYSQL_PASSWORD: '${DB_PASSWORD}'
+    #         MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    #     volumes:
+    #         - 'sailmysql:/var/lib/mysql'
+    #     networks:
+    #         - sail
+    postgres:
+        image: 'postgres'
         ports:
-            - '${FORWARD_DB_PORT:-3306}:3306'
+            - '${FORWARD_DB_PORT:-5432}:5432'
         environment:
-            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_DATABASE: '${DB_DATABASE}'
-            MYSQL_USER: '${DB_USERNAME}'
-            MYSQL_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD}'
         volumes:
-            - 'sailmysql:/var/lib/mysql'
+            - 'sailpostgres:/var/lib/postgresql/data/'
         networks:
             - sail
     redis:
@@ -68,7 +80,9 @@ networks:
     sail:
         driver: bridge
 volumes:
-    sailmysql:
+    # sailmysql:
+    #     driver: local
+    sailpostgres:
         driver: local
     sailredis:
         driver: local
