@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,4 +25,13 @@ Route::get('/', [HomeController::class, 'index']);
 
 Route::group(['prefix' => 'v1'], function () {
     Route::get('/', [HomeController::class, 'v1']);
+});
+
+Route::get('/test', function () {
+    try {
+        DB::connection()->getPdo();
+        return "ok";
+    } catch (\Throwable $th) {
+        return $th->getMessage();
+    }
 });
