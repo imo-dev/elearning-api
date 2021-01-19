@@ -31,19 +31,11 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        // rules validator
-        // $table->id();
-        // $table->string('title', 100);
-        // $table->enum('difficulty', ['Beginner', 'Intermediate', 'Advanced']);
-        // $table->decimal('price', 8, 2);
-        // $table->longText('description');
-        // $table->decimal('score', 8, 2);
-        // $table->boolean('graduate');
-        // $table->timestamps();
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|min:3|max:100',
-            'price' => 'required|string|min:3|max:100',
-            'description' => 'required|string|min:3|max:255'
+            'difficulty' => 'required|string|in:Beginner,Intermediate,Advanced',
+            'price' => 'required|numeric|between:0,8',
+            'description' => 'required|string|min:3',
         ]);
         // check validator
         if ($validator->fails()) return apiResponse(
@@ -57,7 +49,7 @@ class CourseController extends Controller
         // roll back function
         $store = null;
         DB::transaction(function () use ($request, &$store) {
-            $store = Course::create($request->only('title', 'price', 'description'));
+            $store = Course::create($request->only('title', 'difficulty', 'price', 'description'));
         });
 
         // return if succes
@@ -85,12 +77,13 @@ class CourseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
         // rules validator
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|min:3|max:100',
-            'price' => 'required|numeric|min:3|max:100',
-            'description' => 'required|string|min:3|max:100'
+            'difficulty' => 'required|string|in:Beginner,Intermediate,Advanced',
+            'price' => 'required|numeric|between:0,8',
+            'description' => 'required|string|min:3',
         ]);
         // check validator
         if ($validator->fails()) return apiResponse(
@@ -106,7 +99,8 @@ class CourseController extends Controller
         // update function
         $update = null;
         DB::transaction(function () use ($request, $course, &$update) {
-            $update = $course->update($request->only('title', 'price', 'description'));
+            
+            $update = $course->update($request->only('title', 'difficulty', 'price', 'description'));
         });
 
         // return if succes

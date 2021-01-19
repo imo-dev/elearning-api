@@ -16,13 +16,9 @@ class CreateCoursesTable extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->string('title', 100);
-            $table->enum('difficulty', ['Beginner', 'Intermediate', 'Advanced']);
+            $table->enum('difficulty', ['Beginner', 'Intermediate', 'Advanced'])->default('Beginner');
             $table->decimal('price', 100, 2);
-            $table->longText('description');
-            
-            // graduated?
-            $table->decimal('score', 100, 2);
-            $table->boolean('graduate');
+            $table->longText('description');            
             $table->timestamps();
         });
     }

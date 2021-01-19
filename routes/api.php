@@ -27,11 +27,3 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/', [HomeController::class, 'v1']);
 });
 
-Route::get('/test', function () {
-    try {
-        DB::connection()->getPdo();
-        return "ok";
-    } catch (\Throwable $th) {
-        return $th->getMessage();
-    }
-});
