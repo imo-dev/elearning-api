@@ -15,21 +15,3 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/test', function () {
-    try {
-        $pdo = DB::connection()->getPdo();
-        $datatable = (new DataTable)->of(User::query())->make();
-        return apiResponse(
-            $datatable,
-            'success connect to db',
-            true
-        );
-    } catch (\Throwable $th) {
-        return "gagal connect db - " . $th->getMessage();
-    }
-});
