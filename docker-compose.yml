@@ -20,6 +20,7 @@ services:
         depends_on:
             # - mysql
             - postgres
+            - pgadmin4
             - redis
             # - selenium
     # selenium:
@@ -45,9 +46,9 @@ services:
     #     networks:
     #         - sail
     postgres:
-        image: 'postgres'
+        image: 'postgres:9.6.20'
         ports:
-            - '${FORWARD_DB_PORT:-5432}:5432'
+            - '${FORWARD_POSTGRES_PORT:-5432}:5432'
         environment:
             POSTGRES_USER: '${DB_USERNAME}'
             POSTGRES_PASSWORD: '${DB_PASSWORD}'
@@ -55,6 +56,15 @@ services:
             - 'sailpostgres:/var/lib/postgresql/data/'
         networks:
             - sail
+    pgadmin4:
+        image: 'dpage/pgadmin4:4.29'
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@imo-dev.com
+            PGADMIN_DEFAULT_PASSWORD: admin
+        ports:
+        - '${FORWARD_PGADMIN_PORT:-8001}:80'
+        networks:
+        - sail
     redis:
         image: 'redis:alpine'
         ports:
@@ -83,6 +93,8 @@ volumes:
     # sailmysql:
     #     driver: local
     sailpostgres:
+        driver: local
+    pgadmin4:
         driver: local
     sailredis:
         driver: local
