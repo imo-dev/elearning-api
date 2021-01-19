@@ -69,3 +69,8 @@ Restful Api for elearning build with laravel.
   - Configuration Database
   - Install Laravel Sail
   - Configuration Docker
+* [18 January 2021]
+  - Setup enviroment for api
+    - adding helper
+      (global-function, Version, DataTable)
+    - setup api route

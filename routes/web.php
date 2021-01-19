@@ -1,5 +1,7 @@
 <?php
 
+use App\Helpers\DataTable;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -13,16 +15,3 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/test', function () {
-    try {
-        DB::connection()->getPdo();
-        return "sukses connect db";
-    } catch (\Throwable $th) {
-        return "gagal connect db - " . $th->getMessage();
-    } 
-});
