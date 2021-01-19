@@ -46,6 +46,14 @@ Restful Api for elearning build with laravel.
   ./vendor/bin/sail up
   ```
 * wait until docker compose finish
+* migrate database
+  ```
+  sail artisan migrate:fresh
+  ```
+* prepare passport for auth
+  ```
+  sail artisan passport:install
+  ```
 
 
 ### Update
@@ -62,6 +70,7 @@ Restful Api for elearning build with laravel.
 
 ### Third-party Library Use
 * laravel/sail
+* laravel/passport
 
 
 ### Progress
@@ -74,3 +83,5 @@ Restful Api for elearning build with laravel.
     - adding helper
       (global-function, Version, DataTable)
     - setup api route
+* [19 January 2021]
+  - Setup auth api
