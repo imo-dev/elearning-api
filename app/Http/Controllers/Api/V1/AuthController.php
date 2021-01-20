@@ -37,7 +37,8 @@ class AuthController extends Controller
             'username' => 'required|string|unique:users|min:5|max:13|alpha_dash',
             'email' => 'required|string|unique:users',
             'password' => 'required|string|min:5|max:16|confirmed',
-            'phone' => 'required|numeric|digits_between:8,15|unique:users'
+            'phone' => 'required|numeric|digits_between:8,15|unique:users',
+            'role' => 'required|string|in:Admin,User'
         ]);
 
         // validate fails
