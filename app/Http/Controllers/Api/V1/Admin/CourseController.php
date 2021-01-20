@@ -84,7 +84,7 @@ class CourseController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|min:3|max:100',
             'difficulty' => 'required|string|in:Beginner,Intermediate,Advanced',
-            'price' => 'required|numeric|between:0,8',
+            'price' => 'required|numeric|between:0,9999999.99',
             'description' => 'required|string|min:3',
         ]);
         // check validator
