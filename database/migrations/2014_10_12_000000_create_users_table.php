@@ -18,14 +18,14 @@ class CreateUsersTable extends Migration
 
             // 
             $table->string('name', 40);
-            $table->string('username', 15)->unique();
+            $table->string('username', 25)->unique();
             $table->string('email', 40)->unique();
             $table->string('phone', 16)->unique()->nullable();
             $table->string('password', 128);
 
             // 
             $table->enum('status', ['Active', 'Inactive', 'Suspended'])->default('Active');
-            $table->enum('role', ['Admin', 'User'])->default('User');
+            $table->enum('role', ['Admin', 'User', 'Instructor', 'Inspector'])->default('User');
 
             // token
             $table->rememberToken();

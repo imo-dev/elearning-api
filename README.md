@@ -10,6 +10,10 @@ Restful Api for elearning build with laravel.
   ```
   https://imo-dev.atlassian.net/
   ```
+* Postman - Api Document
+  ```
+  https://documenter.getpostman.com/view/6433725/TVzYguhi
+  ```
 
 
 ### First setup
@@ -48,7 +52,7 @@ Restful Api for elearning build with laravel.
 * wait until docker compose finish
 * migrate database
   ```
-  sail artisan migrate:fresh
+  sail artisan migrate:fresh --seed
   ```
 * prepare passport for auth
   ```
@@ -67,7 +71,7 @@ Restful Api for elearning build with laravel.
   ```
 * refresh database
   ```
-  sail artisan migrate:fresh
+  sail artisan migrate:fresh --seed
   sail artisan passport:install
   ```
 * check new setup in README.md for new info everyday
@@ -94,3 +98,31 @@ Restful Api for elearning build with laravel.
 * [20 January 2021]
   - Add admin course categories crud
   - Add relation categories to course belongsToMany
+* [21 January 2021]
+  - Update table user add new role inspectors and instructors
+  - Add user course
+  - Add course inspectors
+  - Add course instructors
+
+### Tables
+![ss tables](https://raw.githubusercontent.com/imo-dev/elearning-api/main/.dev/table.png)
+* Laravel Default
+  - failed_jobs
+  - migrations
+* Category
+  - categories
+  - courses
+  - course_categories
+  - course_inspectors
+  - course_instructors
+* Users
+  - users
+  - user_courses
+  - user_login_histories
+  - password_resets
+* Passport - for auth
+  - oauth_access_tokens
+  - oauth_auth_codes
+  - oauth_clients
+  - oauth_personal_access_clients
+  - oauth_refresh_tokens

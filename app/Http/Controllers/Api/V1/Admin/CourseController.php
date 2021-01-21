@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Course;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,7 +20,7 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $model = Course::with('categories');
+        $model = Course::with('categories', 'instructors', 'inspectors');
         $data = (new DataTable)->of($model)->make();
         return apiResponse($data, 'get data succes', true);
     }
@@ -40,6 +41,16 @@ class CourseController extends Controller
             'description' => 'required|string|min:3',
         ];
         if ($request->has('categories')) $rules['categories'] = 'required|array';
+        if ($request->has('instructors'))
+        {
+            $rules['instructors'] = 'required|array';
+            $rules['instructors.*'] = 'required|numeric';
+        }
+        if ($request->has('inspectors'))
+        {
+            $rules['inspectors'] = 'required|array';
+            $rules['inspectors.*'] = 'required|numeric';
+        }
 
         // rules validator
         $validator = Validator::make($request->all(), $rules);
@@ -56,18 +67,60 @@ class CourseController extends Controller
 
         // search
         $categories = [];
+        $errors = [];
+        $instructors = [];
+        $inspectors = [];
         if ($request->has('categories')) $categories = Category::findOrFail($request->categories);
+        if ($request->has('instructors'))
+        {
+            $instructors = User::findOrFail($request->instructors);
+            $instructors->each(function ($val, $key) use (&$errors) {
+                if ($val->role != 'Instructor') $errors['instructors'] = ["User {$val->id} cannt added because the role is not instructor."];
+            });
+        }
+        if ($request->has('inspectors'))
+        {
+            $inspectors = User::findOrFail($request->inspectors);
+            $inspectors->each(function ($val, $key) use (&$errors) {
+                if ($val->role != 'Inspector') $errors['inspectors'] = ["User {$val->id} cannt added because the role is not inspector."];
+            });
+        }
+        if (count($errors) > 0) return apiResponse(
+            $request->all(),
+            "Validation Fails.",
+            false,
+            'validation.fails',
+            $errors,
+            422
+        );
         
         // roll back function
         $store = null;
-        DB::transaction(function () use ($request, $categories, &$store) {
-            $store = Course::with('categories')->create($request->only('title', 'difficulty', 'price', 'description'));
+        DB::transaction(function () use ($request, $categories, $instructors, $inspectors, &$store) {
+            $store = Course::with('categories', 'instructors', 'inspectors')
+                ->create($request->only('title', 'difficulty', 'price', 'description'));
             if ($request->has('categories')) $store->categories()->sync($categories->pluck('id'));
+            if ($request->has('instructors')) $store->instructors()->sync($instructors->pluck('id'));
+            if ($request->has('inspectors')) $store->inspectors()->sync($inspectors->pluck('id'));
         });
         $stored = (is_null($store)) ? [] : $store->toArray();
 
         // return if succes
-        return apiResponse(array_merge($stored, ['categories' => $categories]), 'create data succes', true, null, null, 201);
+        return apiResponse(
+            array_merge(
+                $stored,
+                [
+                    'categories' => $categories,
+                    'instructors' => $instructors,
+                    'inspectors' => $inspectors
+                ]
+            ),
+            'create data succes',
+            true,
+            null,
+            null,
+            201
+        );
     }
 
     /**
@@ -78,7 +131,7 @@ class CourseController extends Controller
      */
     public function show($id)
     {
-        $course = Course::findOrFail($id);
+        $course = Course::with('categories', 'instructors', 'inspectors')->findOrFail($id);
         return apiResponse($course, 'create data succes', true);
     }
 
@@ -98,6 +151,16 @@ class CourseController extends Controller
         if ($request->has('price')) $rules['price'] = 'required|numeric|between:0,9999999.99';
         if ($request->has('description')) $rules['description'] = 'required|string|min:3';
         if ($request->has('categories')) $rules['categories'] = 'required|array';
+        if ($request->has('instructors'))
+        {
+            $rules['instructors'] = 'required|array';
+            $rules['instructors.*'] = 'required|numeric';
+        }
+        if ($request->has('inspectors'))
+        {
+            $rules['inspectors'] = 'required|array';
+            $rules['inspectors.*'] = 'required|numeric';
+        }
         
         // rules validator
         $validator = Validator::make($request->all(), $rules);
@@ -115,17 +178,60 @@ class CourseController extends Controller
         // search
         $course = Course::findOrFail($id);
         $categories = [];
+        $instructors = [];
+        $inspectors = [];
+        $errors = [];
         if ($request->has('categories')) $categories = Category::findOrFail($request->categories);
+        if ($request->has('instructors'))
+        {
+            $instructors = User::findOrFail($request->instructors);
+            $instructors->each(function ($val, $key) use (&$errors) {
+                if ($val->role != 'Instructor') $errors['instructors'] = ["User {$val->id} cannt added because the role is not instructor."];
+            });
+            $instructors = $instructors->pluck('id');
+        }
+        if ($request->has('inspectors'))
+        {
+            $inspectors = User::findOrFail($request->inspectors);
+            $inspectors->each(function ($val, $key) use (&$errors) {
+                if ($val->role != 'Inspector') $errors['inspectors'] = ["User {$val->id} cannt added because the role is not inspector."];
+            });
+            $inspectors = $inspectors->pluck('id');
+        }
+        if (count($errors) > 0) return apiResponse(
+            $request->all(),
+            "Validation Fails.",
+            false,
+            'validation.fails',
+            $errors,
+            422
+        );
 
         // update function
         $update = null;
-        DB::transaction(function () use ($request, $course, $categories, &$update) {
+        DB::transaction(function () use ($request, $course, $categories, $instructors, $inspectors, &$update) {
             $update = $course->update($request->only('title', 'difficulty', 'price', 'description'));
-            if ($request->has('categories')) $course->categories()->sync($categories->pluck('id'));
+            $course->categories()->sync($categories);
+            $course->instructors()->sync($instructors);
+            $course->inspectors()->sync($inspectors);
         });
 
         // return if succes
-        return apiResponse($request->all(), 'update data succes', true, null, null, 201);
+        return apiResponse(
+            array_merge(
+                $course->toArray(),
+                [
+                    'categories' => $categories,
+                    'instructors' => $instructors,
+                    'inspectors' => $inspectors
+                ]
+            ),
+            'update data succes',
+            true,
+            null,
+            null,
+            200
+        );
     }
 
     /**

@@ -105,7 +105,7 @@ class CategoryController extends Controller
         });
 
         // return if succes
-        return apiResponse($request->all(), 'update data succes', true, null, null, 201);
+        return apiResponse($request->all(), 'update data succes', true, null, null, 200);
     }
 
     /**

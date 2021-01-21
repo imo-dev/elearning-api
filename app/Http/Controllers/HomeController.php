@@ -3,12 +3,17 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Version;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 
 class HomeController extends Controller
 {
     public function index()
     {
+        $tables = DB::query("select table_schema, table_name as tables from information_schema where table_schema = 'public' group by 1");
+        dd($tables->get());
+        return $tables;
+        die($tables);
         $format = env('VERSION_FORMAT_API', ':major.:minor.:patch-:prerelease.:buildmetadata');
         $data = [
             'name' => env('APP_NAME', 'elearning'),

@@ -25,4 +25,24 @@ class Course extends Model
     {
         return $this->belongsToMany(Category::class, 'course_categories');
     }
+
+    /**
+     * Relation - Instructors
+     *
+     * @return void
+     */
+    public function instructors()
+    {
+        return $this->belongsToMany(User::class, 'course_instructors');
+    }
+
+    /**
+     * Relation - Inspectors
+     *
+     * @return void
+     */
+    public function inspectors()
+    {
+        return $this->belongsToMany(User::class, 'course_inspectors');
+    }
 }
