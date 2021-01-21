@@ -61,9 +61,14 @@ Restful Api for elearning build with laravel.
   ```
   git pull origin main
   ```
-* update composer
+* update composer library
   ```
-  composer update
+  composer install
+  ```
+* refresh database
+  ```
+  sail artisan migrate:fresh
+  sail artisan passport:install
   ```
 * check new setup in README.md for new info everyday
 
@@ -85,3 +90,4 @@ Restful Api for elearning build with laravel.
     - setup api route
 * [19 January 2021]
   - Setup auth api
+  - Add admin categories crud
