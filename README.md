@@ -90,4 +90,7 @@ Restful Api for elearning build with laravel.
     - setup api route
 * [19 January 2021]
   - Setup auth api
-  - Add admin categories crud
+  - Add admin courses crud
+* [20 January 2021]
+  - Add admin course categories crud
+  - Add relation categories to course belongsToMany
