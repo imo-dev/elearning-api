@@ -104,6 +104,32 @@ Restful Api for elearning build with laravel.
   - Add course inspectors
   - Add course instructors
 
+
+### Route List
+```
++--------+-----------+--------------------------------+--------------------+--------------------------------------------------------------+------------+
+| Domain | Method    | URI                            | Name               | Action                                                       | Middleware |
++--------+-----------+--------------------------------+--------------------+--------------------------------------------------------------+------------+
+|        | GET|HEAD  | /                              |                    | App\Http\Controllers\HomeController@index                    | api        |
+|        | GET|HEAD  | v1                             |                    | App\Http\Controllers\HomeController@v1                       | api        |
+|        | GET|HEAD  | v1/admin/categories            | categories.index   | App\Http\Controllers\Api\V1\Admin\CategoryController@index   | api        |
+|        | POST      | v1/admin/categories            | categories.store   | App\Http\Controllers\Api\V1\Admin\CategoryController@store   | api        |
+|        | GET|HEAD  | v1/admin/categories/{category} | categories.show    | App\Http\Controllers\Api\V1\Admin\CategoryController@show    | api        |
+|        | PUT|PATCH | v1/admin/categories/{category} | categories.update  | App\Http\Controllers\Api\V1\Admin\CategoryController@update  | api        |
+|        | DELETE    | v1/admin/categories/{category} | categories.destroy | App\Http\Controllers\Api\V1\Admin\CategoryController@destroy | api        |
+|        | GET|HEAD  | v1/admin/courses               | courses.index      | App\Http\Controllers\Api\V1\Admin\CourseController@index     | api        |
+|        | POST      | v1/admin/courses               | courses.store      | App\Http\Controllers\Api\V1\Admin\CourseController@store     | api        |
+|        | GET|HEAD  | v1/admin/courses/{course}      | courses.show       | App\Http\Controllers\Api\V1\Admin\CourseController@show      | api        |
+|        | PUT|PATCH | v1/admin/courses/{course}      | courses.update     | App\Http\Controllers\Api\V1\Admin\CourseController@update    | api        |
+|        | DELETE    | v1/admin/courses/{course}      | courses.destroy    | App\Http\Controllers\Api\V1\Admin\CourseController@destroy   | api        |
+|        | POST      | v1/auth/login                  |                    | App\Http\Controllers\Api\V1\AuthController@login             | api        |
+|        | GET|HEAD  | v1/auth/me                     |                    | App\Http\Controllers\Api\V1\AuthController@me                | api        |
+|        |           |                                |                    |                                                              | auth:api   |
+|        | POST      | v1/auth/register               |                    | App\Http\Controllers\Api\V1\AuthController@register          | api        |
++--------+-----------+--------------------------------+--------------------+--------------------------------------------------------------+------------+
+```
+
+
 ### Tables
 ![ss tables](https://raw.githubusercontent.com/imo-dev/elearning-api/main/.dev/table.svg)
 * Laravel Default
