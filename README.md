@@ -105,7 +105,7 @@ Restful Api for elearning build with laravel.
   - Add course instructors
 
 ### Tables
-![ss tables](https://raw.githubusercontent.com/imo-dev/elearning-api/main/.dev/table.png)
+![ss tables](https://raw.githubusercontent.com/imo-dev/elearning-api/main/.dev/table.svg)
 * Laravel Default
   - failed_jobs
   - migrations
