@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Course extends Model
+class Category extends Model
 {
     use HasFactory;
     
@@ -14,15 +14,15 @@ class Course extends Model
      *
      * @var array
      */
-    protected $fillable = ['title','difficulty', 'price', 'description'];
+    protected $fillable = ['name', 'description'];
 
     /**
-     * Relation - Categories
+     * Relation - Course
      *
      * @return void
      */
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'course_categories');
+        return $this->belongsToMany(Course::class, 'course_categories');
     }
 }
