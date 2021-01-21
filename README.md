@@ -1,8 +1,7 @@
 # elearning-api
 Restful Api for elearning build with laravel.
 
----
-## Table Of Content
+# Table Of Content
   + [Team Workspace](#team-workspace)
   + [First setup](#first-setup)
   + [Update](#update)
@@ -10,9 +9,8 @@ Restful Api for elearning build with laravel.
   + [Progress](#progress)
   + [Route List](#route-list)
   + [Tables](#tables)
----
 
-### Team Workspace 
+## Team Workspace 
 * Github Team
   ```
   https://github.com/imo-dev
@@ -27,7 +25,7 @@ Restful Api for elearning build with laravel.
   ```
 
 
-### First setup
+## First setup
 * clone repo
   ```
   git clone https://github.com/imo-dev/elearning-api
@@ -71,7 +69,7 @@ Restful Api for elearning build with laravel.
   ```
 
 
-### Update
+## Update
 * update repo
   ```
   git pull origin main
@@ -88,12 +86,12 @@ Restful Api for elearning build with laravel.
 * check new setup in README.md for new info everyday
 
 
-### Third-party Library Use
+## Third-party Library Use
 * laravel/sail
 * laravel/passport
 
 
-### Progress
+## Progress
 * [17 January 2021]
   - Configuration Database
   - Install Laravel Sail
@@ -116,7 +114,7 @@ Restful Api for elearning build with laravel.
   - Add course instructors
 
 
-### Route List
+## Route List
 ```
 +--------+-----------+--------------------------------+--------------------+--------------------------------------------------------------+------------+
 | Domain | Method    | URI                            | Name               | Action                                                       | Middleware |
@@ -141,7 +139,7 @@ Restful Api for elearning build with laravel.
 ```
 
 
-### Tables
+## Tables
 ![ss tables](https://raw.githubusercontent.com/imo-dev/elearning-api/main/.dev/table.svg)
 * Laravel Default
   - failed_jobs
