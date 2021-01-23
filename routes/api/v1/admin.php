@@ -5,7 +5,8 @@ use App\Http\Controllers\Api\V1\Admin\CourseController;
 use App\Http\Controllers\Api\V1\Admin\CategoryController;
 
 Route::group([
-    'prefix' => 'admin'
+    'prefix' => 'admin',
+    'middleware' => ['auth:api', 'role:admin']
 ], function () {
     Route::apiResource('courses', CourseController::class);
     Route::apiResource('categories', CategoryController::class);    
