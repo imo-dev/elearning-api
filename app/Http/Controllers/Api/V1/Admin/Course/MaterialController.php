@@ -1,24 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Admin;
+namespace App\Http\Controllers\Api\V1\Admin\Course;
 
 use App\Helpers\DataTable;
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\Course;
+use App\Models\CourseMaterial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends Controller
+class MaterialController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Course $course)
     {
-        $eloquent = Category::query();
+        $eloquent = $course->materials()->with('topic');
         $data = (new DataTable)->of($eloquent)->make();
         return apiResponse($data, 'get data succes', true);
     }
@@ -29,12 +30,13 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Course $course)
     {
         // rules validator
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|min:3|max:100',
-            'description' => 'required|string|min:3|max:255',
+            'title' => 'required|string|min:3|max:100',
+            'description' => 'required|string|min:3',
+            'topic_id' => 'nullable|numeric'
         ]);
 
         // check validator
@@ -49,8 +51,8 @@ class CategoryController extends Controller
         
         // roll back function
         $store = null;
-        DB::transaction(function () use ($request, &$store) {
-            $store = Category::create($request->only('name', 'description'));
+        DB::transaction(function () use ($request, $course, &$store) {
+            $store = $course->materials()->create($request->only('title', 'description', 'topic_id'));
         });
 
         // return if succes
@@ -63,10 +65,10 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Course $course, CourseMaterial $material)
     {
-        $category = Category::findOrFail($id);
-        return apiResponse($category, 'get data succes', true);
+        $material->load('topic');
+        return apiResponse($material, 'get data succes', true);
     }
 
     /**
@@ -76,15 +78,29 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Course $course, CourseMaterial $material)
     {
         // rules validator
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|min:3|max:100',
-            'description' => 'required|string|min:3|max:255',
-        ]);
+        $rules = [];
+        $mergeData = [];
+        if ($request->has('title'))
+        {
+            $rules['title'] = 'required|string|min:3|max:100';
+            $mergeData['title'] = $request->title;
+        }
+        if ($request->has('description'))
+        {
+            $rules['description'] = 'required|string|min:3';
+            $mergeData['description'] = $request->description;
+        }
+        if ($request->has('topic_id'))
+        {
+            $rules['topic_id'] = 'nullable|numeric';
+            $mergeData['topic_id'] = $request->topic_id;
+        }
 
         // check validator
+        $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) return apiResponse(
             $request->all(),
             "Validation Fails.",
@@ -93,15 +109,12 @@ class CategoryController extends Controller
             $validator->errors(),
             422
         );
-
-        // search
-        $course = Category::findOrFail($id);
         
         // update function
         $update = null;
-        DB::transaction(function () use ($request, $course, &$update) {
+        DB::transaction(function () use ($request, $material, $mergeData, &$update) {
             
-            $update = $course->update($request->only('name', 'description'));
+            $update = $material->update($mergeData);
         });
 
         // return if succes
@@ -114,15 +127,15 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Course $course, $id)
     {
         $ids = explode(',', $id);
-        $categories = Category::findOrFail($ids);
-        $destroy = $categories->each(function ($category, $key) {
-            $category->delete();
+        $materials = $course->materials()->findOrFail($ids);
+        $destroy = $materials->each(function ($material, $key) {
+            $material->delete();
         });
 
         //
-        return apiResponse($categories->pluck('id'), 'delete data succes', true);
+        return apiResponse($ids, 'delete data succes', true);
     }
 }

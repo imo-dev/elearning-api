@@ -1,24 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Admin;
+namespace App\Http\Controllers\Api\V1\Admin\Course;
 
 use App\Helpers\DataTable;
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\Course;
+use App\Models\CourseTopic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends Controller
+class TopicController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Course $course)
     {
-        $eloquent = Category::query();
+        $eloquent = $course->topics();
         $data = (new DataTable)->of($eloquent)->make();
         return apiResponse($data, 'get data succes', true);
     }
@@ -29,12 +30,11 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Course $course)
     {
         // rules validator
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|min:3|max:100',
-            'description' => 'required|string|min:3|max:255',
+            'name' => 'required|string|min:3|max:100'
         ]);
 
         // check validator
@@ -49,8 +49,8 @@ class CategoryController extends Controller
         
         // roll back function
         $store = null;
-        DB::transaction(function () use ($request, &$store) {
-            $store = Category::create($request->only('name', 'description'));
+        DB::transaction(function () use ($request, $course, &$store) {
+            $store = $course->topics()->create($request->only('name'));
         });
 
         // return if succes
@@ -63,10 +63,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Course $course, CourseTopic $topic)
     {
-        $category = Category::findOrFail($id);
-        return apiResponse($category, 'get data succes', true);
+        return apiResponse($topic, 'get data succes', true);
     }
 
     /**
@@ -76,12 +75,11 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Course $course, CourseTopic $topic)
     {
         // rules validator
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|min:3|max:100',
-            'description' => 'required|string|min:3|max:255',
         ]);
 
         // check validator
@@ -93,15 +91,12 @@ class CategoryController extends Controller
             $validator->errors(),
             422
         );
-
-        // search
-        $course = Category::findOrFail($id);
         
         // update function
         $update = null;
-        DB::transaction(function () use ($request, $course, &$update) {
+        DB::transaction(function () use ($request, $topic, &$update) {
             
-            $update = $course->update($request->only('name', 'description'));
+            $update = $topic->update($request->only('name'));
         });
 
         // return if succes
@@ -114,15 +109,15 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Course $course, $id)
     {
         $ids = explode(',', $id);
-        $categories = Category::findOrFail($ids);
-        $destroy = $categories->each(function ($category, $key) {
-            $category->delete();
+        $topics = $course->topics()->findOrFail($ids);
+        $destroy = $topics->each(function ($topic, $key) {
+            $topic->delete();
         });
 
         //
-        return apiResponse($categories->pluck('id'), 'delete data succes', true);
+        return apiResponse($ids, 'delete data succes', true);
     }
 }

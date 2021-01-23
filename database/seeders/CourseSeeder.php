@@ -24,5 +24,12 @@ class CourseSeeder extends Seeder
         $course->categories()->attach([1, 2]);
         $course->instructors()->attach(1);
         $course->inspectors()->attach(1);
+        $course->topics()->create(['name' => 'Bab 1']);
+        $course->topics()->create(['name' => 'Bab 2']);
+        $course->topics()->create(['name' => 'Bab 3']);
+        $course->materials()->create(['title' => 'Pengumuman', 'description' => 'haha']);
+        $course->materials()->create(['topic_id' => 1, 'title' => 'Materi Bab 1', 'description' => 'haha']);
+        $course->materials()->create(['topic_id' => 2, 'title' => 'Materi Bab 2', 'description' => 'haha']);
+        $course->materials()->create(['topic_id' => 3, 'title' => 'Materi Bab 3', 'description' => 'haha']);
     }
 }

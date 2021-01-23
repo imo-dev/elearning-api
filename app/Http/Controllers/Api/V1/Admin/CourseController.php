@@ -132,7 +132,7 @@ class CourseController extends Controller
     public function show($id)
     {
         $course = Course::with('categories', 'instructors', 'inspectors')->findOrFail($id);
-        return apiResponse($course, 'create data succes', true);
+        return apiResponse($course, 'get data succes', true);
     }
 
     /**

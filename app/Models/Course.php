@@ -45,4 +45,24 @@ class Course extends Model
     {
         return $this->belongsToMany(User::class, 'course_inspectors');
     }
+
+    /**
+     * Relation - Topics
+     *
+     * @return void
+     */
+    public function topics()
+    {
+        return $this->hasMany(CourseTopic::class);
+    }
+
+    /**
+     * Relation - Materials
+     *
+     * @return void
+     */
+    public function materials()
+    {
+        return $this->hasMany(CourseMaterial::class);
+    }
 }
