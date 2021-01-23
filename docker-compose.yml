@@ -62,9 +62,11 @@ services:
             PGADMIN_DEFAULT_EMAIL: admin@imo-dev.com
             PGADMIN_DEFAULT_PASSWORD: admin
         ports:
-        - '${FORWARD_PGADMIN_PORT:-8001}:80'
+            - '${FORWARD_PGADMIN_PORT:-8001}:80'
+        volumes:
+            - 'sailpgadmin4:/var/lib/pgadmin'
         networks:
-        - sail
+            - sail
     redis:
         image: 'redis:alpine'
         ports:
@@ -94,7 +96,7 @@ volumes:
     #     driver: local
     sailpostgres:
         driver: local
-    pgadmin4:
+    sailpgadmin4:
         driver: local
     sailredis:
         driver: local
