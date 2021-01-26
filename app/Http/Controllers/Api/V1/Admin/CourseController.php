@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Course;
+use App\Models\CourseMaterial;
+use App\Models\CourseTopic;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -131,7 +133,8 @@ class CourseController extends Controller
      */
     public function show($id)
     {
-        $course = Course::with('categories', 'instructors', 'inspectors')->findOrFail($id);
+        $course = Course::with('categories', 'instructors', 'inspectors', 'topics')->findOrFail($id);
+        $course['materials'] = CourseMaterial::select('id', 'title', 'created_at')->whereCourseId($course->id)->get();
         return apiResponse($course, 'get data succes', true);
     }
 
